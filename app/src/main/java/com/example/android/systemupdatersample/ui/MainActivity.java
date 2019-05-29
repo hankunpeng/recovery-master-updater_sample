@@ -45,7 +45,6 @@ import java.util.List;
  * UI for SystemUpdaterSample app.
  */
 public class MainActivity extends Activity {
-
     private static final String TAG = "MainActivity";
 
     private TextView mTextViewBuild;
@@ -134,12 +133,14 @@ public class MainActivity extends Activity {
      * view config button is clicked
      */
     public void onViewConfigClick(View view) {
+        Log.i(TAG, "onViewConfigClick - begin");
         UpdateConfig config = mConfigs.get(mSpinnerConfigs.getSelectedItemPosition());
         new AlertDialog.Builder(this)
                 .setTitle(config.getName())
                 .setMessage(config.getRawJson())
                 .setPositiveButton(R.string.close, (dialog, id) -> dialog.dismiss())
                 .show();
+        Log.i(TAG, "onViewConfigClick - end");
     }
 
     /**
@@ -250,7 +251,8 @@ public class MainActivity extends Activity {
      * values from {@link UpdaterState}.
      */
     private void onUpdaterStateChange(int state) {
-        Log.i(TAG, "UpdaterStateChange state="
+        Log.i(TAG, "onUpdaterStateChange - begin");
+        Log.i(TAG, "onUpdaterStateChange state: "
                 + UpdaterState.getStateText(state)
                 + "/" + state);
         runOnUiThread(() -> {
@@ -270,6 +272,7 @@ public class MainActivity extends Activity {
                 uiStateRebootRequired();
             }
         });
+        Log.i(TAG, "onUpdaterStateChange - end");
     }
 
     /**
@@ -277,12 +280,14 @@ public class MainActivity extends Activity {
      * be one of the values from {@link UpdateEngine.UpdateStatusConstants}.
      */
     private void onEngineStatusUpdate(int status) {
-        Log.i(TAG, "StatusUpdate - status="
+        Log.i(TAG, "onEngineStatusUpdate - begin");
+        Log.i(TAG, "onEngineStatusUpdate - status: "
                 + UpdateEngineStatuses.getStatusText(status)
                 + "/" + status);
         runOnUiThread(() -> {
             setUiEngineStatus(status);
         });
+        Log.i(TAG, "onEngineStatusUpdate - end");
     }
 
     /**
@@ -382,16 +387,21 @@ public class MainActivity extends Activity {
      * loads json configurations from configs dir that is defined in {@link UpdateConfigs}.
      */
     private void loadUpdateConfigs() {
+        Log.i(TAG, "loadUpdateConfigs - begin");
         mConfigs = UpdateConfigs.getUpdateConfigs(this);
         loadConfigsToSpinner(mConfigs);
+        Log.i(TAG, "loadUpdateConfigs - end");
     }
 
     /**
      * @param status update engine status code
      */
     private void setUiEngineStatus(int status) {
+        Log.i(TAG, "setUiEngineStatus - begin");
+        Log.i(TAG, "setUiEngineStatus - status: " + status);
         String statusText = UpdateEngineStatuses.getStatusText(status);
         mTextViewEngineStatus.setText(statusText + "/" + status);
+        Log.i(TAG, "setUiEngineStatus - end");
     }
 
     /**
@@ -411,6 +421,7 @@ public class MainActivity extends Activity {
     }
 
     private void loadConfigsToSpinner(List<UpdateConfig> configs) {
+        Log.i(TAG, "loadConfigsToSpinner - begin");
         String[] spinnerArray = UpdateConfigs.configsToNames(configs);
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item,
@@ -418,6 +429,7 @@ public class MainActivity extends Activity {
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout
                 .simple_spinner_dropdown_item);
         mSpinnerConfigs.setAdapter(spinnerArrayAdapter);
+        Log.i(TAG, "loadConfigsToSpinner - end");
     }
 
     private UpdateConfig getSelectedConfig() {

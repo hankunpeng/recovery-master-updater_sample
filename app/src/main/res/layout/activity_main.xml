@@ -1,34 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2018 The Android Open Source Project
-
-     Licensed under the Apache License, Version 2.0 (the "License");
-     you may not use this file except in compliance with the License.
-     You may obtain a copy of the License at
-
-          http://www.apache.org/licenses/LICENSE-2.0
-
-     Unless required by applicable law or agreed to in writing, software
-     distributed under the License is distributed on an "AS IS" BASIS,
-     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     See the License for the specific language governing permissions and
-     limitations under the License.
--->
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="4dip"
-    android:gravity="center_horizontal"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="4dip">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        >
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,13 +23,15 @@
                 android:id="@+id/textViewBuildtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Current Build:" />
+                android:text="Current Build:"
+                android:textSize="32sp" />
 
             <TextView
                 android:id="@+id/textViewBuild"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/unknown" />
+                android:text="@string/unknown"
+                android:textSize="32sp" />
 
             <Space
                 android:layout_width="match_parent"
@@ -55,7 +41,8 @@
                 android:id="@+id/textView4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Apply an update" />
+                android:text="Apply an update"
+                android:textSize="32sp" />
 
             <TextView
                 android:id="@+id/textViewConfigsDirHint"
@@ -64,14 +51,15 @@
                 android:layout_marginTop="4dp"
                 android:text="Config files located in NULL"
                 android:textColor="#777"
-                android:textSize="10sp"
+                android:textSize="32sp"
                 android:textStyle="italic" />
 
             <Spinner
                 android:id="@+id/spinnerConfigs"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp" />
+                android:layout_height="32dp"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/holo_red_dark" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -85,7 +73,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:onClick="onReloadClick"
-                    android:text="Reload" />
+                    android:text="Reload"
+                    android:textSize="32sp" />
 
                 <Button
                     android:id="@+id/buttonViewConfig"
@@ -93,7 +82,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:onClick="onViewConfigClick"
-                    android:text="View config" />
+                    android:text="View config"
+                    android:textSize="32sp" />
 
                 <Button
                     android:id="@+id/buttonApplyConfig"
@@ -101,7 +91,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:onClick="onApplyConfigClick"
-                    android:text="Apply" />
+                    android:text="Apply"
+                    android:textSize="32sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -114,14 +105,16 @@
                     android:id="@+id/textView3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Updater state:" />
+                    android:text="Updater state:"
+                    android:textSize="32sp" />
 
                 <TextView
                     android:id="@+id/textViewUpdaterState"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
-                    android:text="@string/unknown" />
+                    android:text="@string/unknown"
+                    android:textSize="32sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -134,14 +127,17 @@
                     android:id="@+id/textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Engine status:" />
+                    android:text="Engine status:"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="32sp" />
 
                 <TextView
                     android:id="@+id/textViewEngineStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
-                    android:text="@string/unknown" />
+                    android:text="@string/unknown"
+                    android:textSize="32sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -154,25 +150,28 @@
                     android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Engine error:" />
+                    android:text="Engine error:"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="32sp" />
 
                 <TextView
                     android:id="@+id/textViewEngineErrorCode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
-                    android:text="@string/unknown" />
+                    android:text="@string/unknown"
+                    android:textSize="32sp" />
             </LinearLayout>
 
 
             <ProgressBar
                 android:id="@+id/progressBar"
                 style="?android:attr/progressBarStyleHorizontal"
-                android:layout_marginTop="8dp"
-                android:min="0"
-                android:max="100"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:max="100"
+                android:min="0" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -186,7 +185,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:onClick="onStopClick"
-                    android:text="Stop" />
+                    android:text="Stop"
+                    android:textSize="32sp" />
 
                 <Button
                     android:id="@+id/buttonReset"
@@ -194,7 +194,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:onClick="onResetClick"
-                    android:text="Reset" />
+                    android:text="Reset"
+                    android:textSize="32sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -209,7 +210,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:onClick="onSuspendClick"
-                    android:text="Suspend" />
+                    android:text="Suspend"
+                    android:textSize="32sp" />
 
                 <Button
                     android:id="@+id/buttonResume"
@@ -217,7 +219,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:onClick="onResumeClick"
-                    android:text="Resume" />
+                    android:text="Resume"
+                    android:textSize="32sp" />
             </LinearLayout>
 
             <TextView
@@ -225,17 +228,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
+                android:text="@string/finish_update_info"
                 android:textColor="#777"
-                android:textSize="10sp"
-                android:textStyle="italic"
-                android:text="@string/finish_update_info" />
+                android:textSize="32sp"
+                android:textStyle="italic" />
 
             <Button
                 android:id="@+id/buttonSwitchSlot"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:onClick="onSwitchSlotClick"
-                android:text="@string/switch_slot" />
+                android:text="@string/switch_slot"
+                android:textSize="32sp" />
 
         </LinearLayout>
 

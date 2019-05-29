@@ -2,12 +2,10 @@
 
 本项目是 [updater_sample](https://android.googlesource.com/platform/bootable/recovery/+/master/updater_sample/) 的 AndroidStudio Project 版本，用来调研 FOTA 升级。
 
-FOTA 涉及 [实现 A/B 更新](https://source.android.google.cn/devices/tech/ota/ab/ab_implement)，生成 OTA 更新包要注意匹配各自手头的硬件（A 样件，或 B 样件）。
-
-分割线以下内容来源于 https://android.googlesource.com/platform/bootable/recovery/+/master/updater_sample/README.md 。
+分割线包裹的内容来源于 https://android.googlesource.com/platform/bootable/recovery/+/master/updater_sample/README.md 。
 
 
---------------------------------分割线--------------------------------
+-------------------------------- 分割线 - 开始 --------------------------------
 
 
 # SystemUpdaterSample
@@ -41,8 +39,16 @@ to the app, but in this sample, the config files are stored on the device.
 The directory can be found in logs or on the UI. In most cases it should be located at
 `/data/user/0/com.example.android.systemupdatersample/files/configs/`.
 
+// TODO - 1 - No such file or directory, why?
+```bash
+$ adb shell ls -l /data/user/0/com.example.android.systemupdatersample/files/configs/
+ls: /data/user/0/com.example.android.systemupdatersample/files/configs/: No such file or directory
+```
+
 SystemUpdaterSample app downloads OTA package from `url`. In this sample app
 `url` is expected to point to file system, e.g. `file:///data/my-sample-ota-builds-dir/ota-002.zip`.
+
+// TODO - 2 - Where is the ota zip?
 
 If `ab_install_type` is `NON_STREAMING` then app checks if `url` starts
 with `file://` and passes `url` to the `update_engine`.
@@ -279,3 +285,12 @@ android# getenforce
 
 SystemUpdaterSample app is released under
 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+
+
+-------------------------------- 分割线 - 结束 --------------------------------
+
+
+
+FOTA 涉及 [实现 A/B 更新](https://source.android.google.cn/devices/tech/ota/ab/ab_implement)，生成 OTA 更新包要注意匹配各自手头的硬件（A 样件，或 B 样件）。
+
+FOTA 涉及 [通过 HTTPS 和 SSL 确保安全](https://developer.android.google.cn/training/articles/security-ssl)，比如 HU 独立升级的场景。

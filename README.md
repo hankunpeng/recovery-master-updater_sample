@@ -1,3 +1,15 @@
+# 背景信息
+
+本项目是 [updater_sample](https://android.googlesource.com/platform/bootable/recovery/+/master/updater_sample/) 的 AndroidStudio Project 版本，用来调研 FOTA 升级。
+
+FOTA 涉及 [实现 A/B 更新](https://source.android.google.cn/devices/tech/ota/ab/ab_implement)，生成 OTA 更新包要注意匹配各自手头的硬件（A 样件，或 B 样件）。
+
+分割线以下内容来源于 https://android.googlesource.com/platform/bootable/recovery/+/master/updater_sample/README.md 。
+
+
+--------------------------------分割线--------------------------------
+
+
 # SystemUpdaterSample
 
 This app demonstrates how to use Android system updates APIs to install

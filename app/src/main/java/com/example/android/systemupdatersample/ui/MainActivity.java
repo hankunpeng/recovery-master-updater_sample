@@ -21,6 +21,7 @@ import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.UpdateEngine;
 import android.util.Log;
@@ -39,12 +40,23 @@ import com.example.android.systemupdatersample.util.UpdateConfigs;
 import com.example.android.systemupdatersample.util.UpdateEngineErrorCodes;
 import com.example.android.systemupdatersample.util.UpdateEngineStatuses;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 
 /**
  * UI for SystemUpdaterSample app.
  */
-public class MainActivity extends Activity {
+public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
 
     private TextView mTextViewBuild;
@@ -110,10 +122,85 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onResume() {
+        Log.i(TAG, "onResume - begin");
         super.onResume();
         // Binding to UpdateEngine invokes onStatusUpdate callback,
         // persisted updater state has to be loaded and prepared beforehand.
         this.mUpdateManager.bind();
+
+        ZipFile zipFile;
+        ZipEntry zipEntry;
+
+        final String sdcard = Environment.getExternalStorageDirectory().getPath();
+        final String updateZip = "ic421_update.zip";
+        final String pathName = sdcard + "/" + updateZip;
+        File file = new File(pathName);
+//        File file = new File("/sdcard/ic421_update.zip");
+//        File file = new File("/storage/emulated/0/ic421_update.zip");
+        Log.i(TAG, "sdcard: " + sdcard);
+        Log.i(TAG, "updateZip: " + updateZip);
+        Log.i(TAG, "pathName: " + pathName);
+
+
+        org.apache.commons.compress.archivers.zip.ZipFile apacheZipFile;
+        ZipArchiveEntry zipArchiveEntry;
+        InputStream inputStream;
+        ZipArchiveInputStream zipArchiveInputStream;
+
+
+        if (file.exists()) {
+            Log.i(TAG, "File - exists");
+
+            // headerKeyValuePairs
+            try {
+                zipFile = new ZipFile(file, Charset.defaultCharset());
+                Log.i(TAG, "ZipFile: " + zipFile.getName());
+
+                zipEntry = zipFile.getEntry("payload_properties.txt");
+                if (null == zipEntry) {
+                    Log.i(TAG, "payload_properties.txt is null");
+                } else {
+                    Log.i(TAG, "ZipEntry: " + zipEntry.getName());
+                    inputStream = zipFile.getInputStream(zipEntry);
+                    StringBuilder stringBuilder = new StringBuilder();
+                    byte[] buffer = new byte[1024];
+                    int read = 0;
+                    while ((read = inputStream.read(buffer, 0, 1024)) >= 0) {
+                        stringBuilder.append(new String(buffer, 0, read));
+                    }
+                    Log.i(TAG, "ZipEntry: " + stringBuilder.toString());
+                    inputStream.close();
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+            try {
+                apacheZipFile = new org.apache.commons.compress.archivers.zip.ZipFile(file);
+                Log.i(TAG, "ZipFile: " + apacheZipFile.toString());
+                zipArchiveEntry = apacheZipFile.getEntry("payload.bin");
+
+                if (null == zipArchiveEntry) {
+                    Log.i(TAG, "payload.bin is null");
+                } else {
+                    Log.i(TAG, "ZipArchiveEntry: " + zipArchiveEntry.getName());
+//                    inputStream = zipFile.getInputStream(zipEntry);
+//                    zipArchiveInputStream = new ZipArchiveInputStream(inputStream,"UTF-8");
+                    Log.i(TAG, "Offset: " + zipArchiveEntry.getDataOffset());
+                    Log.i(TAG, "Size: " + zipArchiveEntry.getSize());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            Log.i(TAG, "File - null");
+        }
+
+
+        Log.i(TAG, "onResume - end");
     }
 
     @Override
@@ -147,6 +234,7 @@ public class MainActivity extends Activity {
      * apply config button is clicked
      */
     public void onApplyConfigClick(View view) {
+        Log.i(TAG, "onApplyConfigClick - begin");
         new AlertDialog.Builder(this)
                 .setTitle("Apply Update")
                 .setMessage("Do you really want to apply this update?")
@@ -158,14 +246,17 @@ public class MainActivity extends Activity {
                 })
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
+        Log.i(TAG, "onApplyConfigClick - end");
     }
 
     private void applyUpdate(UpdateConfig config) {
+        Log.i(TAG, "applyUpdate - begin");
         try {
             mUpdateManager.applyUpdate(this, config);
         } catch (UpdaterState.InvalidTransitionException e) {
             Log.e(TAG, "Failed to apply update " + config.getName(), e);
         }
+        Log.i(TAG, "applyUpdate - end");
     }
 
     /**
@@ -332,9 +423,11 @@ public class MainActivity extends Activity {
     }
 
     private void uiResetEngineText() {
+        Log.i(TAG, "uiResetEngineText - begin");
         mTextViewEngineStatus.setText(R.string.unknown);
         mTextViewEngineErrorCode.setText(R.string.unknown);
         // Note: Do not reset mTextViewUpdaterState; UpdateManager notifies updater state properly.
+        Log.i(TAG, "uiResetEngineText - end");
     }
 
     private void uiStateIdle() {
@@ -433,6 +526,7 @@ public class MainActivity extends Activity {
     }
 
     private UpdateConfig getSelectedConfig() {
+        Log.i(TAG, "getSelectedConfig - mSpinnerConfigs.getSelectedItemPosition(): " + mSpinnerConfigs.getSelectedItemPosition());
         return mConfigs.get(mSpinnerConfigs.getSelectedItemPosition());
     }
 

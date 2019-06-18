@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+
+    <string name="button_cancel">取消</string>
+    <string name="button_settings">设置</string>
+    <string name="dialog_title_prompt">提示</string>
+    <string name="dialog_title_message">当前应用缺少必要权限。\n请点击 &quot;设置&quot; 获取所需权限。</string>
+
+</resources>

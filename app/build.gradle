@@ -27,6 +27,7 @@ android {
 
 dependencies {
     compileOnly 'com.android:framework:1.0.2'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.google.guava:guava:27.1-jre'
 //    implementation 'com.google.guava:guava-io:r03'
 //    implementation 'com.google.guava:guava-collections:r03'

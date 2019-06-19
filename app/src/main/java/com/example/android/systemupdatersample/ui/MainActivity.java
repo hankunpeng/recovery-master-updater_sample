@@ -44,12 +44,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.Enumeration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 
@@ -141,6 +140,9 @@ public class MainActivity extends BaseActivity {
         Log.i(TAG, "updateZip: " + updateZip);
         Log.i(TAG, "pathName: " + pathName);
 
+//        内置SD卡路径：/storage/emulated/0
+//        外置SD卡路径：/storage/extSdCard
+
 
         org.apache.commons.compress.archivers.zip.ZipFile apacheZipFile;
         ZipArchiveEntry zipArchiveEntry;
@@ -168,8 +170,38 @@ public class MainActivity extends BaseActivity {
                     while ((read = inputStream.read(buffer, 0, 1024)) >= 0) {
                         stringBuilder.append(new String(buffer, 0, read));
                     }
-                    Log.i(TAG, "ZipEntry: " + stringBuilder.toString());
                     inputStream.close();
+
+
+                    // TODO 核实需要传入的形式
+
+                    /**
+                     * 一个字串的形式
+                     */
+                    String header = stringBuilder.toString();
+                    Log.i(TAG, "Header: " + stringBuilder.toString());
+/*
+2019-06-19 11:16:16.925 18725-18725/com.example.android.systemupdatersample I/MainActivity: Header: FILE_HASH=/D1pEWqr2At2ZkTSxYl5PsppC9Q+kDNwmiazHaNyYnk=
+    FILE_SIZE=1294713948
+    METADATA_HASH=RsYX8f1E/BfTLuYA0YPjNXZ6quPdp3zzuJVylcg1vtA=
+    METADATA_SIZE=119474
+*/
+
+                    /**
+                     * 每一行当做一个数组元素的形式
+                     */
+                    String[] headerKeyValuePairs = header.split("\\n");
+                    Log.i(TAG, "array length: " + headerKeyValuePairs.length);
+                    for (String kv : headerKeyValuePairs) {
+                        Log.i(TAG, "kv: " + kv);
+                    }
+/*
+2019-06-19 11:16:16.926 18725-18725/com.example.android.systemupdatersample I/MainActivity: array length: 4
+2019-06-19 11:16:16.926 18725-18725/com.example.android.systemupdatersample I/MainActivity: kv: FILE_HASH=/D1pEWqr2At2ZkTSxYl5PsppC9Q+kDNwmiazHaNyYnk=
+2019-06-19 11:16:16.926 18725-18725/com.example.android.systemupdatersample I/MainActivity: kv: FILE_SIZE=1294713948
+2019-06-19 11:16:16.926 18725-18725/com.example.android.systemupdatersample I/MainActivity: kv: METADATA_HASH=RsYX8f1E/BfTLuYA0YPjNXZ6quPdp3zzuJVylcg1vtA=
+2019-06-19 11:16:16.926 18725-18725/com.example.android.systemupdatersample I/MainActivity: kv: METADATA_SIZE=119474
+*/
                 }
 
             } catch (IOException e) {
@@ -199,6 +231,19 @@ public class MainActivity extends BaseActivity {
             Log.i(TAG, "File - null");
         }
 
+
+/*
+        ArrayList<String> list = new ArrayList<>();
+        list.add("A");
+        list.add("B");
+        list.add("C");
+        int listSize = list.size();
+        Log.i(TAG, "listSize: " + listSize);
+
+        // 使用泛型，无需显式类型转换
+        String[] array = list.toArray(new String[0]);
+        Log.i(TAG, "array[0]: " + array[0]);
+*/
 
         Log.i(TAG, "onResume - end");
     }
@@ -252,6 +297,8 @@ public class MainActivity extends BaseActivity {
     private void applyUpdate(UpdateConfig config) {
         Log.i(TAG, "applyUpdate - begin");
         try {
+            // 我们做本地升级时没必要传想 config 这么复杂的参数
+            // TODO 调整升级配置参数
             mUpdateManager.applyUpdate(this, config);
         } catch (UpdaterState.InvalidTransitionException e) {
             Log.e(TAG, "Failed to apply update " + config.getName(), e);

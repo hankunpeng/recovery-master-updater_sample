@@ -94,12 +94,14 @@ public class PrepareUpdateService extends IntentService {
             UpdateConfig config,
             Handler handler,
             UpdateResultCallback resultCallback) {
+        Log.i(TAG, "startService - begin");
         Log.d(TAG, "Starting PrepareUpdateService");
         ResultReceiver receiver = new CallbackResultReceiver(handler, resultCallback);
         Intent intent = new Intent(context, PrepareUpdateService.class);
         intent.putExtra(EXTRA_PARAM_CONFIG, config);
         intent.putExtra(EXTRA_PARAM_RESULT_RECEIVER, receiver);
         context.startService(intent);
+        Log.i(TAG, "startService - end");
     }
 
     public PrepareUpdateService() {

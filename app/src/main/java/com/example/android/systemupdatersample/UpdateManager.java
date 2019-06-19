@@ -48,7 +48,9 @@ public class UpdateManager {
 
     private static final String TAG = "UpdateManager";
 
-    /** HTTP Header: User-Agent; it will be sent to the server when streaming the payload. */
+    /**
+     * HTTP Header: User-Agent; it will be sent to the server when streaming the payload.
+     */
     static final String HTTP_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
             + "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36";
 
@@ -62,7 +64,9 @@ public class UpdateManager {
 
     private AtomicBoolean mManualSwitchSlotRequired = new AtomicBoolean(true);
 
-    /** Synchronize state with engine status only once when app binds to UpdateEngine. */
+    /**
+     * Synchronize state with engine status only once when app binds to UpdateEngine.
+     */
     private AtomicBoolean mStateSynchronized = new AtomicBoolean(false);
 
     @GuardedBy("mLock")
@@ -283,6 +287,7 @@ public class UpdateManager {
      */
     public synchronized void applyUpdate(Context context, UpdateConfig config)
             throws UpdaterState.InvalidTransitionException {
+        Log.i(TAG, "applyUpdate - begin");
         mEngineErrorCode.set(UpdateEngineErrorCodes.UNKNOWN);
         setUpdaterState(UpdaterState.RUNNING);
 
@@ -297,6 +302,7 @@ public class UpdateManager {
             mManualSwitchSlotRequired.set(false);
         }
 
+        // TODO 弄清怎么连接到 update_engine
         Log.d(TAG, "Starting PrepareUpdateService");
         PrepareUpdateService.startService(context, config, mHandler, (code, payloadSpec) -> {
             if (code != PrepareUpdateService.RESULT_CODE_SUCCESS) {
@@ -304,11 +310,13 @@ public class UpdateManager {
                 setUpdaterStateSilent(UpdaterState.ERROR);
                 return;
             }
+            // 这里把参数继续往下传递
             updateEngineApplyPayload(UpdateData.builder()
                     .setExtraProperties(prepareExtraProperties(config))
                     .setPayload(payloadSpec)
                     .build());
         });
+        Log.i(TAG, "applyUpdate - end");
     }
 
     private List<String> prepareExtraProperties(UpdateConfig config) {
@@ -348,12 +356,28 @@ public class UpdateManager {
         ArrayList<String> properties = new ArrayList<>(update.getPayload().getProperties());
         properties.addAll(update.getExtraProperties());
 
+        /**
+         * 关于实现本地升级的想法
+         *
+         * 1. 在 Settings 里实现本地升级功能界面
+         * 2. 打开升级功能界面时连接 update_engine
+         * 2.1 没连接上，告警提示。
+         * 2.2 能连接上，信息提示。
+         * 3. 检查 U 盘里有没有升级包
+         * 3.1 无升级包，告警提示。
+         * 3.2 有升级包，从中解析出 4 个升级参数。（可进行下一步）
+         * 4. 点击按钮，调用 update_engine 的 applyPayload 方法。
+         * 5. 获取升级状态
+         * 6. 展示升级进度
+         *
+         */
         try {
             mUpdateEngine.applyPayload(
-                    update.getPayload().getUrl(),
-                    update.getPayload().getOffset(),
-                    update.getPayload().getSize(),
-                    properties.toArray(new String[0]));
+                    update.getPayload().getUrl(), // 参数 url
+                    update.getPayload().getOffset(), // 参数 offset
+                    update.getPayload().getSize(), // 参数 size
+                    properties.toArray(new String[0]) // 参数 headerKeyValuePairs
+            );
         } catch (Exception e) {
             Log.e(TAG, "UpdateEngine failed to apply the update", e);
             setUpdaterStateSilent(UpdaterState.ERROR);
@@ -381,11 +405,11 @@ public class UpdateManager {
      * Sets the new slot that has the updated partitions as the active slot,
      * which device will boot into next time.
      * This method is only supposed to be called after the payload is applied.
-     *
+     * <p>
      * Invoking {@link UpdateEngine#applyPayload} with the same payload url, offset, size
      * and payload metadata headers doesn't trigger new update. It can be used to just switch
      * active A/B slot.
-     *
+     * <p>
      * {@link UpdateEngine#applyPayload} might take several seconds to finish, and it will
      * invoke callbacks {@link this#onStatusUpdate} and {@link this#onPayloadApplicationComplete)}.
      */
@@ -416,7 +440,7 @@ public class UpdateManager {
     /**
      * Synchronize UpdaterState with UpdateEngine status.
      * Apply necessary UpdateEngine operation if status are out of sync.
-     *
+     * <p>
      * It's expected to be called once when sample app binds itself to UpdateEngine.
      */
     private void synchronizeUpdaterStateWithUpdateEngineStatus() {

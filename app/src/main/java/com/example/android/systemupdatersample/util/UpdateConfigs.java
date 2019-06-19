@@ -34,7 +34,7 @@ import java.util.Optional;
  * Utility class for working with json update configurations.
  */
 public final class UpdateConfigs {
-
+    private static final String TAG = "UpdateConfigs";
     public static final String UPDATE_CONFIGS_ROOT = "configs/";
 
     /**
@@ -50,6 +50,8 @@ public final class UpdateConfigs {
      * @return configs root directory
      */
     public static String getConfigsRoot(Context context) {
+        Log.i(TAG, "UPDATE_CONFIGS_ROOT: " + UPDATE_CONFIGS_ROOT);
+        Log.i(TAG, "context.getFilesDir().toString(): " + context.getFilesDir().toString());
         return Paths
                 .get(context.getFilesDir().toString(), UPDATE_CONFIGS_ROOT)
                 .toString();
@@ -60,16 +62,32 @@ public final class UpdateConfigs {
      * @return list of configs from directory {@link UpdateConfigs#getConfigsRoot}
      */
     public static List<UpdateConfig> getUpdateConfigs(Context context) {
+        Log.i(TAG, "getUpdateConfigs - called");
         File root = new File(getConfigsRoot(context));
         ArrayList<UpdateConfig> configs = new ArrayList<>();
+
+        if (root.exists()) {
+            Log.i(TAG, "getUpdateConfigs - root: " + root.getAbsolutePath());
+        } else {
+            Log.i(TAG, "getUpdateConfigs - root is not exists");
+            return configs;
+        }
+
+/*
         if (!root.exists()) {
             return configs;
         }
+*/
+
+/*
         for (final File f : root.listFiles()) {
+            Log.i(TAG, "getUpdateConfigs - f.getName() " + f.getName());
+            Log.i(TAG, "getUpdateConfigs - f.toPath() " + f.toPath());
             if (!f.isDirectory() && f.getName().endsWith(".json")) {
                 try {
                     String json = new String(Files.readAllBytes(f.toPath()),
                             StandardCharsets.UTF_8);
+                    Log.i(TAG, "getUpdateConfigs - json:  " + json);
                     configs.add(UpdateConfig.fromJson(json));
                 } catch (Exception e) {
                     Log.e("UpdateConfigs", "Can't read/parse config file " + f.getName(), e);
@@ -78,6 +96,7 @@ public final class UpdateConfigs {
                 }
             }
         }
+*/
         return configs;
     }
 
